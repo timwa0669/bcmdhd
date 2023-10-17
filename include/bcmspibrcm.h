@@ -45,7 +45,7 @@
 #define sd_data(x)	do { if (sd_msglevel & SDH_DATA_VAL)  printf x; } while (0)
 #define sd_ctrl(x)	do { if (sd_msglevel & SDH_CTRL_VAL)  printf x; } while (0)
 #else
-#define sd_err(x)
+#define sd_err(x)	do { if (sd_msglevel & SDH_ERROR_VAL) printf x; } while (0)
 #define sd_trace(x)
 #define sd_info(x)
 #define sd_debug(x)
@@ -53,7 +53,11 @@
 #define sd_ctrl(x)
 #endif // endif
 
+#if defined(DHD_DEBUG)
+#define sd_log(x)	do { if (sd_msglevel & SDH_LOG_VAL)  printf x; } while (0)
+#else
 #define sd_log(x)
+#endif
 
 #define SDIOH_ASSERT(exp) \
 	do { if (!(exp)) \
