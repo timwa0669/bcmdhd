@@ -192,6 +192,8 @@ u32 wl_dbg_level = WL_DBG_ERR | WL_DBG_P2P_ACTION | WL_DBG_INFO;
 u32 wl_dbg_level = WL_DBG_ERR;
 #endif // endif
 
+module_param(wl_dbg_level, int, 0);
+
 #define	MAX_VIF_OFFSET	15
 #define MAX_WAIT_TIME 1500
 #ifdef WLAIBSS_MCHAN
