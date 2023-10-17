@@ -32,13 +32,28 @@
 #define	_BCM_SD_STD_H
 
 /* global msglevel for debug messages - bitvals come from sdiovar.h */
+
+#if defined(DHD_DEBUG)
+#define sd_err(x)	do { if (sd_msglevel & SDH_ERROR_VAL) printf x; } while (0)
+#define sd_trace(x)	do { if (sd_msglevel & SDH_TRACE_VAL) printf x; } while (0)
+#define sd_info(x)	do { if (sd_msglevel & SDH_INFO_VAL)  printf x; } while (0)
+#define sd_debug(x)	do { if (sd_msglevel & SDH_DEBUG_VAL) printf x; } while (0)
+#define sd_data(x)	do { if (sd_msglevel & SDH_DATA_VAL)  printf x; } while (0)
+#define sd_ctrl(x)	do { if (sd_msglevel & SDH_CTRL_VAL)  printf x; } while (0)
+#else
 #define sd_err(x)	do { if (sd_msglevel & SDH_ERROR_VAL) printf x; } while (0)
 #define sd_trace(x)
 #define sd_info(x)
 #define sd_debug(x)
 #define sd_data(x)
 #define sd_ctrl(x)
+#endif // endif
+
+#if defined(DHD_DEBUG)
+#define sd_dma(x)	do { if (sd_msglevel & SDH_DMA_VAL) printf x; } while (0)
+#else
 #define sd_dma(x)
+#endif
 
 #define sd_sync_dma(sd, read, nbytes)
 #define sd_init_dma(sd)
@@ -48,7 +63,11 @@
 extern int sdstd_osinit(sdioh_info_t *sd);
 extern void sdstd_osfree(sdioh_info_t *sd);
 
+#if defined(DHD_DEBUG)
+#define sd_log(x)	do { if (sd_msglevel & SDH_LOG_VAL)  printf x; } while (0)
+#else
 #define sd_log(x)
+#endif
 
 #define SDIOH_ASSERT(exp) \
 	do { if (!(exp)) \
