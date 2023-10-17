@@ -174,8 +174,11 @@ void* bcmsdh_probe(osl_t *osh, void *dev, void *sdioh, void *adapter_info, uint 
 		* (LINUX_VERSION_CODE > KERNEL_VERSION(2, 6, 36))
 		*/
 
-#if defined(OOB_INTR_ONLY)
+#if defined(DHD_WAKE_STATUS) || defined(OOB_INTR_ONLY)
 	spin_lock_init(&bcmsdh_osinfo->oob_irq_spinlock);
+#endif
+
+#if defined(OOB_INTR_ONLY)
 	/* Get customer specific OOB IRQ parametres: IRQ number as IRQ type */
 	bcmsdh_osinfo->oob_irq_num = wifi_platform_get_irq_number(adapter_info,
 		&bcmsdh_osinfo->oob_irq_flags);
