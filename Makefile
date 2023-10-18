@@ -43,6 +43,13 @@ ifeq ($(CONFIG_ANDROID_VERSION),)
 CONFIG_ANDROID_VERSION := 0
 endif
 
+# Reset PCIe card using function level reset on probing.
+# The driver may exit irregularly before and the probe
+# may fails on si_attach().
+ifneq ($(CONFIG_BCMDHD_PCIE),)
+DHDCFLAGS += -DRESET_PCIE_ON_PROBE
+endif
+
 #####################
 # SDIO Basic feature
 #####################
