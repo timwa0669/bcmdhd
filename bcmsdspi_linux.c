@@ -77,7 +77,11 @@ struct sdos_info {
 /* For Broadcom PCI-SPI Host controller (Raggedstone) */
 #if defined(BCMSPI) && (defined(BCMPCISPIHOST) || defined(GSPIBCM))
 #ifndef SDLX_MSG
+#if defined(DHD_DEBUG)
 #define SDLX_MSG(x) printf x
+#else
+#define SDLX_MSG(x)
+#endif // endif
 #endif // endif
 extern void* bcmsdh_probe(osl_t *osh, void *dev, void *sdioh, void *adapter_info,
         uint bus_type, uint bus_num, uint slot_num);
