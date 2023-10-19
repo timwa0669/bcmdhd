@@ -27,6 +27,23 @@
 #
 
 #####################
+# Misc Build flags
+#####################
+
+# Ignore unused wl_cfg80211_get_channel
+# error: 'wl_cfg80211_get_channel' defined but not used
+DHDCFLAGS += $(call cc-disable-warning, unused-function)
+
+# Re-init driver when wpa_supplicant crashes.
+# Due to supplicant crash/unclean de-initialization
+# which didn't free the p2p discovery interface.
+DHDCFLAGS += -DEXPLICIT_DISCIF_CLEANUP
+
+ifeq ($(CONFIG_ANDROID_VERSION),)
+CONFIG_ANDROID_VERSION := 0
+endif
+
+#####################
 # SDIO Basic feature
 #####################
 
@@ -569,7 +586,7 @@ all:
 	@$(MAKE) --no-print-directory -C $(KDIR) M=$(CURDIR) modules
 
 clean:
-	rm -rf *.o *.ko *.mod.c *~ .*.cmd *.o.cmd .*.o.cmd \
+	rm -rf *.o *.ko *.mod.c *~ .*.cmd *.o.cmd .*.o.cmd *.o.d .*.o.d *.mod \
 	Module.symvers modules.order .tmp_versions modules.builtin
 
 install:
