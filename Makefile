@@ -39,10 +39,6 @@ DHDCFLAGS += $(call cc-disable-warning, unused-function)
 # which didn't free the p2p discovery interface.
 DHDCFLAGS += -DEXPLICIT_DISCIF_CLEANUP
 
-ifeq ($(CONFIG_ANDROID_VERSION),)
-CONFIG_ANDROID_VERSION := 0
-endif
-
 # Reset PCIe card using function level reset on probing.
 # The driver may exit irregularly before and the probe
 # may fails on si_attach().
@@ -606,7 +602,7 @@ all:
 	@$(MAKE) --no-print-directory -C $(KDIR) M=$(CURDIR) modules
 
 clean:
-	rm -rf *.o *.ko *.mod.c *~ .*.cmd *.o.cmd .*.o.cmd *.o.d .*.o.d *.mod \
+	rm -rf *.o *.ko *.mod.c *~ .*.cmd *.o.cmd .*.o.cmd *.o.d .*.o.d *.mod *.mod.o\
 	Module.symvers modules.order .tmp_versions modules.builtin
 
 install:
