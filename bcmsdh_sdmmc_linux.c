@@ -191,6 +191,12 @@ static const struct sdio_device_id bcmsdh_sdmmc_ids[] = {
 	{ SDIO_DEVICE(SDIO_VENDOR_ID_BROADCOM, BCM43014_D11N2G_ID) },
 	{ SDIO_DEVICE(SDIO_VENDOR_ID_BROADCOM, BCM43014_D11N5G_ID) },
 	{ SDIO_DEVICE(SDIO_VENDOR_ID_BROADCOM, BCM4373_CHIP_ID) },
+	{ SDIO_DEVICE(SDIO_VENDOR_ID_BROADCOM, BCM43430_CHIP_ID) },
+	{ SDIO_DEVICE(SDIO_VENDOR_ID_BROADCOM, BCM4345_CHIP_ID) },
+	{ SDIO_DEVICE(SDIO_VENDOR_ID_BROADCOM, BCM43455_CHIP_ID) },
+	{ SDIO_DEVICE(CY_DNGL_VID, 43439) }, /* BCM43439_CHIP_ID */
+	{ SDIO_DEVICE(CY_DNGL_VID, 0xbd3d) }, /* BCM_DNGL_BL_PID_43439 */
+	{ SDIO_DEVICE(CY_DNGL_VID, 0xbd31) }, /* BCM_DNGL_BL_PID_89570 */
 	/* { SDIO_DEVICE(SDIO_VENDOR_ID_BROADCOM, SDIO_ANY_ID) }, */
 	 /* end: all zeroes */
 	{ 0, 0, 0, 0},
@@ -272,7 +278,7 @@ static int dummy_probe(struct sdio_func *func,
 	if (id) {
 		sd_err(("%s: class=0x%x; vendor=0x%x; device=0x%x\n", __FUNCTION__,
 			id->class, id->vendor, id->device));
-		if (id->vendor != SDIO_VENDOR_ID_BROADCOM)
+		if (id->vendor != SDIO_VENDOR_ID_BROADCOM || id->vendor != CY_DNGL_VID)
 				return -ENODEV;
 	}
 	if (func && (func->num != 2)) {
