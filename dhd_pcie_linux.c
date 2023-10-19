@@ -1951,6 +1951,17 @@ int dhdpcie_init(struct pci_dev *pdev)
 #endif /* USE_SMMU_ARCH_MSM */
 	int ret = 0;
 
+/* The driver may exit irregularly before and the probe may fails on si_attach(). */
+#if defined(RESET_PCIE_ON_PROBE) && (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 13, 0))
+	ret = pci_reset_function_locked(pdev);
+	/* Wait 200ms for device ready */
+	msleep(200);
+	if (ret) {
+		DHD_ERROR(("%s: PCIe function reset failed with %d\n", __FUNCTION__, ret));
+		return ret;
+	}
+#endif
+
 	do {
 		/* osl attach */
 		if (!(osh = osl_attach(pdev, PCI_BUS, FALSE))) {
