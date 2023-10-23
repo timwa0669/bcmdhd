@@ -158,6 +158,14 @@ static int bcmsdh_sdmmc_probe(struct sdio_func *func,
 	sd_info(("sdio_device: 0x%04x\n", func->device));
 	sd_info(("Function#: 0x%04x\n", func->num));
 
+#if defined(RESET_SDIO_ON_PROBE) && (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 2, 0))
+	if (func->num == 1) {
+		sdio_claim_host(func);
+		mmc_hw_reset(func->card->host);
+		sdio_release_host(func);
+	}
+#endif
+
 	/* 4318 doesn't have function 2 */
 	if ((func->num == 2) || (func->num == 1 && func->device == 0x4))
 		ret = sdioh_probe(func);

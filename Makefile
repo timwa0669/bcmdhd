@@ -73,6 +73,13 @@ ifneq ($(CONFIG_BCMDHD_PCIE),)
 DHDCFLAGS += -DRESET_PCIE_ON_PROBE
 endif
 
+# Reset SDIO card using mmc_hw_reset on probing.
+# The driver may exit irregularly before and the probe
+# may fails on bootloader ready timeout.
+ifeq ($(CONFIG_BCMDHD_SDIO),y)
+DHDCFLAGS += -DRESET_SDIO_ON_PROBE
+endif
+
 #####################
 # SDIO Basic feature
 #####################
