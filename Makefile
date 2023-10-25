@@ -39,6 +39,8 @@ DHDCFLAGS += $(call cc-disable-warning, unused-function)
 # which didn't free the p2p discovery interface.
 DHDCFLAGS += -DEXPLICIT_DISCIF_CLEANUP
 
+# Some custom platform set CONFIG_ANDROID=y but unset
+# CONFIG_ANDROID_VERSION. This hacking prevents this.
 ifeq ($(CONFIG_ANDROID_VERSION),)
 CONFIG_ANDROID_VERSION := 0
 endif
