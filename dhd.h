@@ -389,9 +389,10 @@ enum dhd_op_flags {
 /*
  * MAX_NVRAMBUF_SIZE determines the size of the Buffer in the DHD that holds
  * the NVRAM data. That is the size of the buffer pointed by bus->vars
- * This also needs to be increased to 16K to support NVRAM size higher than 8K
+ * This also needs to be increased to 64000 to support NVRAM size higher than 8K or 16K
+ * The new data is from brcmfmac: BRCMF_FW_MAX_NVRAM_SIZE
  */
-#define MAX_NVRAMBUF_SIZE	(16 * 1024) /* max nvram buf size */
+#define MAX_NVRAMBUF_SIZE	(64000) /* max nvram buf size */
 #define MAX_CLM_BUF_SIZE	(48 * 1024) /* max clm blob size */
 #define MAX_TXCAP_BUF_SIZE	(16 * 1024) /* max txcap blob size */
 #ifdef DHD_DEBUG
