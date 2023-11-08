@@ -53,6 +53,8 @@ ifeq ($(CONFIG_BCMDHD_SDIO),y)
 DHDCFLAGS += -DRESET_SDIO_ON_PROBE
 endif
 
+DHDCFLAGS += -DWL_VIF_SUPPORT
+
 #####################
 # SDIO Basic feature
 #####################
@@ -350,9 +352,7 @@ ifneq ($(CONFIG_HAVE_IMX8_SOC),)
   DHDCFLAGS += \
   	-DCONFIG_DTS \
 	-DOEM_EMBEDDED_LINUX \
-	-DPLATFORM_IMX \
-	-DSDIO_ISR_THREAD \
-	-DWL_VIF_SUPPORT
+	-DPLATFORM_IMX
 endif
 endif
 
