@@ -3441,9 +3441,7 @@ dhdsdio_readshared(dhd_bus_t *bus, sdpcm_shared_t *sh)
 	uint32 shaddr = 0;
 
 	/* This temporary WAR for now */
-#if defined(PLATFORM_IMX)
 	return BCME_OK;
-#endif /* defined(PLATFORM_IMX) */
 
 	if (bus->sih == NULL) {
 		if (bus->dhd && bus->dhd->dongle_reset) {
