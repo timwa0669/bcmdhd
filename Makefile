@@ -53,6 +53,8 @@ ifeq ($(CONFIG_BCMDHD_PLATFORM_GENERIC),y)
 DHDCFLAGS += -DCONFIG_DTS
 endif
 
+DHDCFLAGS += -DWL_VIF_SUPPORT
+
 #####################
 # SDIO Basic feature
 #####################
@@ -433,8 +435,7 @@ ifeq ($(CONFIG_BCMDHD_SDMMC),y)
 ifneq ($(CONFIG_HAVE_IMX8_SOC),)
   DHDCFLAGS += \
 	-DOEM_EMBEDDED_LINUX \
-	-DPLATFORM_IMX \
-	-DWL_VIF_SUPPORT
+	-DPLATFORM_IMX
 ifeq ($(CONFIG_FCIPA_CHIP),y)
   DHDCFLAGS += -DFCIPA_CHIP
 endif
