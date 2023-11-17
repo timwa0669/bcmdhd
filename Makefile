@@ -29,6 +29,14 @@
 #####################
 # Misc Build flags
 #####################
+ifeq ($(CONFIG_BCMDHD_PLATFORM_ROCKCHIP),y)
+DHDCFLAGS += -DCONFIG_DHD_PLAT_ROCKCHIP
+ifeq ($(CONFIG_BCMDHD_SDIO),y)
+DHDCFLAGS += -DDHD_OF_SUPPORT
+DHDCFLAGS += -DDHD_CUSTOM_PLAT_DATA
+DHDOFILES += dhd_custom_rockchip.o
+endif
+endif
 
 # Ignore unused wl_cfg80211_get_channel
 # error: 'wl_cfg80211_get_channel' defined but not used
@@ -557,6 +565,8 @@ DHDOFILES += dhd_pno.o dhd_common.o dhd_ip.o dhd_custom_gpio.o \
 ifneq ($(CONFIG_DHD_MONITOR_INTERFACE),)
     DHDCFLAGS += -DDHD_MONITOR_INTERFACE
     DHDOFILES += wl_linux_mon.o
+else ifeq ($(CONFIG_BCMDHD_P2P_IF),y)
+	DHDCFLAGS += -DWL_ENABLE_P2P_IF
 endif
 
 ifneq ($(CONFIG_DHD_OF_SUPPORT),)
