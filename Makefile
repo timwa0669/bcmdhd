@@ -40,6 +40,15 @@ DHDCFLAGS += -DCONFIG_ANDROID_VERSION=$(CONFIG_ANDROID_VERSION)
 # for non-Wi-Fi-6 modules using -DWIFI6_6E enabled dhd.
 DHDCFLAGS += -DWL_BW_CAP_NO_WARN_ON
 
+ifeq ($(CONFIG_BCMDHD_PLATFORM_ROCKCHIP),y)
+DHDCFLAGS += -DCONFIG_DHD_PLAT_ROCKCHIP
+ifeq ($(CONFIG_BCMDHD_SDIO),y)
+DHDCFLAGS += -DDHD_OF_SUPPORT
+DHDCFLAGS += -DDHD_CUSTOM_PLAT_DATA
+DHDOFILES += dhd_custom_rockchip.o
+endif
+endif
+
 #####################
 # SDIO Basic feature
 #####################
@@ -632,6 +641,8 @@ DHDOFILES += dhd_pno.o dhd_common.o dhd_ip.o dhd_custom_gpio.o \
 ifneq ($(CONFIG_DHD_MONITOR_INTERFACE),)
     DHDCFLAGS += -DDHD_MONITOR_INTERFACE
     DHDOFILES += wl_linux_mon.o
+else ifeq ($(CONFIG_BCMDHD_P2P_IF),y)
+	DHDCFLAGS += -DWL_ENABLE_P2P_IF
 endif
 
 ifneq ($(CONFIG_DHD_OF_SUPPORT),)

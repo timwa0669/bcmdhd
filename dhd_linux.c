@@ -714,6 +714,12 @@ char *st_str_file_path = "/data/misc/wifi/rtecdc.bin";
 static char *map_file_path = "/data/misc/wifi/rtecdc.map";
 static char *rom_st_str_file_path = "/data/misc/wifi/roml.bin";
 static char *rom_map_file_path = "/data/misc/wifi/roml.map";
+#elif defined(OEM_ANDROID) && defined(CONFIG_DHD_PLAT_ROCKCHIP)
+static char *logstrs_path = "/data/misc/wifi/logstrs.bin";
+char *st_str_file_path = "/data/misc/wifi/rtecdc.bin";
+static char *map_file_path = "/data/misc/wifi/rtecdc.map";
+static char *rom_st_str_file_path = "/data/misc/wifi/roml.bin";
+static char *rom_map_file_path = "/data/misc/wifi/roml.map";
 #elif defined(OEM_ANDROID) /* For Brix KK Live Image */
 static char *logstrs_path = "/installmedia/logstrs.bin";
 char *st_str_file_path = "/installmedia/rtecdc.bin";
@@ -13412,7 +13418,11 @@ dhd_module_cleanup(void)
 	dhd_wifi_platform_unregister_drv();
 }
 
+#ifdef CONFIG_DHD_PLAT_ROCKCHIP
+static void
+#else /* CONFIG_DHD_PLAT_ROCKCHIP */
 static void __exit
+#endif /* CONFIG_DHD_PLAT_ROCKCHIP */
 dhd_module_exit(void)
 {
 	atomic_set(&exit_in_progress, 1);
@@ -13421,7 +13431,11 @@ dhd_module_exit(void)
 	dhd_destroy_to_notifier_skt();
 }
 
+#ifdef CONFIG_DHD_PLAT_ROCKCHIP
+static int
+#else /* CONFIG_DHD_PLAT_ROCKCHIP */
 static int __init
+#endif /* CONFIG_DHD_PLAT_ROCKCHIP */
 dhd_module_init(void)
 {
 	int err;
@@ -13487,6 +13501,7 @@ dhd_reboot_callback(struct notifier_block *this, unsigned long code, void *unuse
 	return NOTIFY_DONE;
 }
 
+#ifndef CONFIG_DHD_PLAT_ROCKCHIP
 #if defined(CONFIG_DEFERRED_INITCALLS) && !defined(EXYNOS_PCIE_MODULE_PATCH)
 #if defined(CONFIG_MACH_UNIVERSAL7420) || defined(CONFIG_SOC_EXYNOS8890) || \
 	defined(CONFIG_ARCH_MSM8996) || defined(CONFIG_ARCH_MSM8998) || \
@@ -13508,6 +13523,45 @@ late_initcall(dhd_module_init);
 #endif /* USE_LATE_INITCALL_SYNC */
 
 module_exit(dhd_module_exit);
+#else /* CONFIG_DHD_PLAT_ROCKCHIP */
+#ifdef CONFIG_WIFI_LOAD_DRIVER_WHEN_KERNEL_BOOTUP
+static int wifi_init_thread(void *data)
+{
+	dhd_module_init();
+	return 0;
+}
+#endif /* CONFIG_WIFI_LOAD_DRIVER_WHEN_KERNEL_BOOTUP */
+
+int __init rockchip_wifi_init_module_rkwifi(void)
+{
+#ifdef CONFIG_WIFI_LOAD_DRIVER_WHEN_KERNEL_BOOTUP
+	struct task_struct *kthread = NULL;
+
+	kthread = kthread_run(wifi_init_thread, NULL, "wifi_init_thread");
+
+	if (IS_ERR(kthread)) {
+		DHD_ERROR(("create wifi_init_thread failed.\n"));
+	}
+
+	return 0;
+#else /* CONFIG_WIFI_LOAD_DRIVER_WHEN_KERNEL_BOOTUP */
+	return dhd_module_init();
+#endif /* CONFIG_WIFI_LOAD_DRIVER_WHEN_KERNEL_BOOTUP */
+}
+
+void __exit rockchip_wifi_exit_module_rkwifi(void)
+{
+	dhd_module_exit();
+}
+
+#ifdef CONFIG_WIFI_LOAD_DRIVER_WHEN_KERNEL_BOOTUP
+late_initcall(rockchip_wifi_init_module_rkwifi);
+module_exit(rockchip_wifi_exit_module_rkwifi);
+#else /* CONFIG_WIFI_LOAD_DRIVER_WHEN_KERNEL_BOOTUP */
+module_init(rockchip_wifi_init_module_rkwifi);
+module_exit(rockchip_wifi_exit_module_rkwifi);
+#endif /* CONFIG_WIFI_LOAD_DRIVER_WHEN_KERNEL_BOOTUP */
+#endif /* CONFIG_DHD_PLAT_ROCKCHIP */
 
 /*
  * OS specific functions required to implement DHD driver in OS independent way
@@ -16770,6 +16824,11 @@ write_dump_to_file(dhd_pub_t *dhd, uint8 *buf, int size, char *fname)
 		DHD_COMMON_DUMP_PATH, fname, memdump_type,  dhd->debug_dump_time_str);
 	file_mode = O_CREAT | O_WRONLY;
 #elif defined(OEM_ANDROID)
+#ifdef CONFIG_DHD_PLAT_ROCKCHIP
+	snprintf(memdump_path, sizeof(memdump_path), "%s%s_%s_" "%s",
+		DHD_COMMON_DUMP_PATH, fname, memdump_type,	dhd->debug_dump_time_str);
+	file_mode = O_CREAT | O_WRONLY | O_SYNC;
+#else /* CONFIG_DHD_PLAT_ROCKCHIP */
 	snprintf(memdump_path, sizeof(memdump_path), "%s%s_%s_" "%s",
 		"/root/", fname, memdump_type,  dhd->debug_dump_time_str);
 	/* Extra flags O_DIRECT and O_SYNC are required for Brix Android, as we are
@@ -16790,6 +16849,7 @@ write_dump_to_file(dhd_pub_t *dhd, uint8 *buf, int size, char *fname)
 			filp_close(fp, NULL);
 		}
 	}
+#endif /* CONFIG_DHD_PLAT_ROCKCHIP */
 #else
 	snprintf(memdump_path, sizeof(memdump_path), "%s%s_%s_" "%s",
 		DHD_COMMON_DUMP_PATH, fname, memdump_type,  dhd->debug_dump_time_str);
@@ -18002,6 +18062,8 @@ int dhd_set_ap_isolate(dhd_pub_t *dhdp, uint32 idx, int val)
 #define RNDINFO PLATFORM_PATH".rnd"
 #elif defined(CUSTOMER_HW2) || defined(BOARD_HIKEY)
 #define RNDINFO "/data/misc/wifi/.rnd"
+#elif defined(OEM_ANDROID) && defined(CONFIG_DHD_PLAT_ROCKCHIP)
+#define RNDINFO	"/data/misc/wifi/.rnd"
 #elif defined(OEM_ANDROID) && (defined(BOARD_PANDA) || defined(__ARM_ARCH_7A__))
 #define RNDINFO "/data/misc/wifi/.rnd"
 #elif defined(OEM_ANDROID)

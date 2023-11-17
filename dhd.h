@@ -826,6 +826,8 @@ extern void copy_debug_dump_time(char *dest, char *src);
 
 #if defined(CUSTOMER_HW2) || defined(BOARD_HIKEY)
 #define DHD_COMMON_DUMP_PATH	"/data/misc/wifi/"
+#elif defined(OEM_ANDROID) && defined(CONFIG_DHD_PLAT_ROCKCHIP)
+#define DHD_COMMON_DUMP_PATH	"/data/misc/wifi/"
 #elif defined(OEM_ANDROID) && (defined(BOARD_PANDA) || defined(__ARM_ARCH_7A__))
 #define DHD_COMMON_DUMP_PATH	"/data/vendor/wifi/"
 #elif defined(OEM_ANDROID)  	/* For other Android platforms such as Brix Live Image */
