@@ -89,6 +89,11 @@ struct wifi_platform_data dhd_wlan_control = {0};
 #endif /* CONFIG_OF && !defined(CONFIG_ARCH_MSM) */
 #endif /* !defind(CONFIG_DTS) */
 
+#ifdef DHD_CUSTOM_PLAT_DATA
+extern int dhd_wlan_init_plat_data(void);
+extern int dhd_wlan_deinit_plat_data(void);
+#endif /* DHD_CUSTOM_PLAT_DATA */
+
 static int dhd_wifi_platform_load(void);
 
 extern void* wl_cfg80211_get_dhdp(struct net_device *dev);
@@ -542,6 +547,12 @@ static int wifi_ctrlfunc_register_drv(void)
 #if !defined(CONFIG_DTS)
 	if (dts_enabled) {
 		struct resource *resource;
+#ifdef DHD_CUSTOM_PLAT_DATA
+		wifi_plat_dev_probe_ret = dhd_wlan_init_plat_data();
+		if (wifi_plat_dev_probe_ret) {
+			return wifi_plat_dev_probe_ret;
+		}
+#endif /* DHD_CUSTOM_PLAT_DATA */
 		adapter->wifi_plat_data = (void *)&dhd_wlan_control;
 		resource = &dhd_wlan_resources;
 		adapter->irq_num = resource->start;
@@ -592,6 +603,9 @@ void wifi_ctrlfunc_unregister_drv(void)
 #ifdef BOARD_HIKEY_MODULAR
 	dhd_wlan_deinit();
 #endif /* BOARD_HIKEY_MODULAR */
+#ifdef DHD_CUSTOM_PLAT_DATA
+	dhd_wlan_deinit_plat_data();
+#endif /* DHD_CUSTOM_PLAT_DATA */
 #endif /* !defined(CONFIG_DTS) */
 
 	kfree(dhd_wifi_platdata->adapters);

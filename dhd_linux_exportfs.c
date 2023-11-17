@@ -594,6 +594,8 @@ static struct dhd_attr dhd_attr_cntl_macaddr =
 #define MEMDUMPINFO PLATFORM_PATH".memdump.info"
 #elif defined(CUSTOMER_HW2) || defined(BOARD_HIKEY)
 #define MEMDUMPINFO "/data/misc/wifi/.memdump.info"
+#elif defined(OEM_ANDROID) && defined(CONFIG_DHD_PLAT_ROCKCHIP)
+#define MEMDUMPINFO	"/data/misc/wifi/.memdump.info"
 #elif defined(OEM_ANDROID) && (defined(BOARD_PANDA) || defined(__ARM_ARCH_7A__))
 #define MEMDUMPINFO "/data/misc/wifi/.memdump.info"
 #elif defined(OEM_ANDROID) && defined(DHD_FW_COREDUMP)
@@ -728,6 +730,8 @@ static struct dhd_attr dhd_attr_cntl_memdump =
 #ifdef CUSTOMER_HW4_DEBUG
 #define ASSERTINFO PLATFORM_PATH".assert.info"
 #elif defined(CUSTOMER_HW2) || defined(BOARD_HIKEY)
+#define ASSERTINFO "/data/misc/wifi/.assert.info"
+#elif defined(OEM_ANDROID) && defined(CONFIG_DHD_PLAT_ROCKCHIP)
 #define ASSERTINFO "/data/misc/wifi/.assert.info"
 #elif defined(OEM_ANDROID)
 #define ASSERTINFO "/installmedia/.assert.info"
