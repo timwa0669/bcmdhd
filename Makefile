@@ -49,6 +49,10 @@ DHDOFILES += dhd_custom_rockchip.o
 endif
 endif
 
+ifeq ($(CONFIG_BCMDHD_PLATFORM_GENERIC),y)
+DHDCFLAGS += -DCONFIG_DTS
+endif
+
 #####################
 # SDIO Basic feature
 #####################
@@ -428,7 +432,6 @@ ifeq ($(CONFIG_BCMDHD_SDMMC),y)
   DHDCFLAGS += -DBCMLXSDMMC -DCUSTOM_TXGLOM=1
 ifneq ($(CONFIG_HAVE_IMX8_SOC),)
   DHDCFLAGS += \
-  	-DCONFIG_DTS \
 	-DOEM_EMBEDDED_LINUX \
 	-DPLATFORM_IMX \
 	-DWL_VIF_SUPPORT
