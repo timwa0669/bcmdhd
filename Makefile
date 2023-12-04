@@ -71,7 +71,11 @@ ifeq ($(CONFIG_BCMDHD_SDIO),y)
 DHDCFLAGS += -DRESET_SDIO_ON_PROBE
 endif
 
-DHDCFLAGS += -DWL_VIF_SUPPORT 
+DHDCFLAGS += -DWL_VIF_SUPPORT
+
+# Disable bw_cap WARN_ON() by default. Suppressing logs
+# for non-Wi-Fi-6 modules using -DWIFI6_6E enabled dhd.
+DHDCFLAGS += -DWL_BW_CAP_NO_WARN_ON
 
 #####################
 # SDIO Basic feature
