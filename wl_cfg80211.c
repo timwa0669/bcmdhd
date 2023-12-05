@@ -19571,15 +19571,21 @@ static void wl_get_bwcap(struct bcm_cfg80211 *cfg, u32 bw_cap[])
 				bw_cap[NL80211_BAND_6GHZ] = band;
 				return;
 			}
+#ifndef WL_BW_CAP_NO_WARN_ON
 			WARN_ON(1);
+#endif /* WL_BW_CAP_NO_WARN_ON */
 #else
 			return;
 #endif /* WL_6E */
 		}
+#ifndef WL_BW_CAP_NO_WARN_ON
 		WARN_ON(1);
+#endif /* WL_BW_CAP_NO_WARN_ON */
 		return;
 	}
+#ifndef WL_BW_CAP_NO_WARN_ON
 	WARN_ON(1);
+#endif /* WL_BW_CAP_NO_WARN_ON */
 
 	WL_ERR(("fallback to mimo_bw_cap info\n"));
 	mimo_bwcap = 0;
