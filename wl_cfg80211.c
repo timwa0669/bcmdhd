@@ -27097,9 +27097,11 @@ wl_cfg80211_set_rekey_data(struct wiphy *wiphy, struct net_device *dev,
 	}
 #endif /* WL_DHD_XR_MASTER */
 
-	prhex("kck", (const u8 *) (data->kck), RSN_KCK_LENGTH);
-	prhex("kek", (const u8 *) (data->kek), RSN_KEK_LENGTH);
-	prhex("replay_ctr", (const u8 *) (data->replay_ctr), RSN_REPLAY_LEN);
+	if (wl_dbg_level & WL_DBG_INFO) {
+		prhex("kck", (const u8 *) (data->kck), RSN_KCK_LENGTH);
+		prhex("kek", (const u8 *) (data->kek), RSN_KEK_LENGTH);
+		prhex("replay_ctr", (const u8 *) (data->replay_ctr), RSN_REPLAY_LEN);
+	}
 	bcopy(data->kck, keyinfo.KCK, RSN_KCK_LENGTH);
 	bcopy(data->kek, keyinfo.KEK, RSN_KEK_LENGTH);
 	bcopy(data->replay_ctr, keyinfo.ReplayCounter, RSN_REPLAY_LEN);
