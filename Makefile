@@ -27,6 +27,16 @@
 #
 
 #####################
+# Misc build flags
+#####################
+
+# Make CONFIG_ANDROID_VERSION shell expr comparable.
+# CONFIG_ANDROID_VERSION may be unset when building on linux platform.
+# This patch needs to go to the top of the Makefile.
+CONFIG_ANDROID_VERSION ?= 0
+DHDCFLAGS += -DCONFIG_ANDROID_VERSION=$(CONFIG_ANDROID_VERSION)
+
+#####################
 # SDIO Basic feature
 #####################
 
@@ -232,10 +242,11 @@ ifeq ($(CONFIG_ANDROID),y)
   DHDCFLAGS += -DKEEP_WIFION_OPTION
   DHDCFLAGS += -Wno-date-time
 
-ifeq ($(CONFIG_ANDROID_VERSION),)
- CONFIG_ANDROID_VERSION ?= 0
-endif
- DHDCFLAGS += -DCONFIG_ANDROID_VERSION=$(CONFIG_ANDROID_VERSION)
+# Moved to the top of the Makefile
+#ifeq ($(CONFIG_ANDROID_VERSION),)
+# CONFIG_ANDROID_VERSION ?= 0
+#endif
+# DHDCFLAGS += -DCONFIG_ANDROID_VERSION=$(CONFIG_ANDROID_VERSION)
 
 # for Android 12 and higher
 ifeq ($(shell expr $(CONFIG_ANDROID_VERSION) \>= 12), 1)
