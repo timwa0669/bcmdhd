@@ -510,6 +510,7 @@
 #define CYW43022_CHIP_ID        0xA80E                  /* 43022 chipcommon chipid */
 #define CYW43023_CHIP_ID        0xA80F                  /* 43023 chipcommon chipid */
 #define CYW43022_DEVICE_ID      0xbd3f          	/* cypress 43022 deviceid */
+#define CYW55500_DEVICE_ID      0xbd3e          	/* 55500 devicecommon deviceid */
 #define	BCM43014_CHIP_ID	0xA806			/* 43014 chipcommon chipid */
 #define	BCM4369_CHIP_ID		0x4369			/* 4369 chipcommon chipid */
 
