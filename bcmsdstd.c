@@ -60,7 +60,7 @@
 #include <sbsdio.h> /* SDIOH (host controller) core hardware definitions */
 
 /* Globals */
-uint sd_msglevel = SDH_ERROR_VAL;
+uint sd_msglevel = 0;
 
 uint sd_hiok = TRUE;			/* Use hi-speed mode if available? */
 uint sd_sdmode = SDIOH_MODE_SD4;	/* Use SD4 mode by default */

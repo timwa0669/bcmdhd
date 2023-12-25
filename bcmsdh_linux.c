@@ -83,7 +83,11 @@ typedef struct bcmsdh_os_info {
 } bcmsdh_os_info_t;
 
 /* debugging macros */
+#if defined(DHD_DEBUG)
+#define SDLX_MSG(x) printf x
+#else
 #define SDLX_MSG(x)
+#endif // endif
 
 /**
  * Checks to see if vendor and device IDs match a supported SDIO Host Controller.

@@ -27,7 +27,7 @@
 #
 
 #####################
-# Misc build flags
+# Customized patches
 #####################
 
 # Make CONFIG_ANDROID_VERSION shell expr comparable.
@@ -35,6 +35,10 @@
 # This patch needs to go to the top of the Makefile.
 CONFIG_ANDROID_VERSION ?= 0
 DHDCFLAGS += -DCONFIG_ANDROID_VERSION=$(CONFIG_ANDROID_VERSION)
+
+# Disable bw_cap WARN_ON() by default. Suppressing logs
+# for non-Wi-Fi-6 modules using -DWIFI6_6E enabled dhd.
+DHDCFLAGS += -DWL_BW_CAP_NO_WARN_ON
 
 #####################
 # SDIO Basic feature
