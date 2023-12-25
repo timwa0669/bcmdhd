@@ -55,6 +55,17 @@ endif
 
 DHDCFLAGS += -DWL_VIF_SUPPORT
 
+# ISR thread options. Disabled when using hw oob.
+ifeq ($(filter y, $(CONFIG_BCMDHD_OOB_HOST_WAKE) $(CONFIG_BCMDHD_SDIO_OOB) $(CONFIG_BCMDHD_DISABLE_ISR_THREAD)),)
+ifeq ($(CONFIG_BCMDHD_SDIO),y)
+DHDCFLAGS += -DSDIO_ISR_THREAD
+endif
+
+ifneq ($(CONFIG_BCMDHD_PCIE),)
+DHDCFLAGS += -DPCIE_ISR_THREAD
+endif
+endif
+
 #####################
 # SDIO Basic feature
 #####################
