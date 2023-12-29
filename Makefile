@@ -80,6 +80,9 @@ ifeq ($(CONFIG_BCMDHD_SDIO),y)
 DHDCFLAGS += -DRESET_SDIO_ON_PROBE
 endif
 
+# To support ACS on hostapd
+DHDCFLAGS += -DWL_SUPPORT_ACS_OFFLOAD
+
 #####################
 # SDIO Basic feature
 #####################
@@ -348,8 +351,9 @@ endif
 # To support Android Common kernel
  DHDCFLAGS += -DDHD_SUPPORT_REQFW_FOR_FIRMWARE_DOWNLOADING -DDHD_DENY_DIRECT_FS_ACCESS
 
+# Enabled for non-Android platform
 # To support ACS on hostapd
- DHDCFLAGS += -DWL_SUPPORT_ACS_OFFLOAD
+# DHDCFLAGS += -DWL_SUPPORT_ACS_OFFLOAD
 endif
 endif
 
