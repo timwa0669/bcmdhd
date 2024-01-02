@@ -77,6 +77,11 @@ DHDCFLAGS += -DWL_VIF_SUPPORT
 # for non-Wi-Fi-6 modules using -DWIFI6_6E enabled dhd.
 DHDCFLAGS += -DWL_BW_CAP_NO_WARN_ON
 
+# Use internal wakelock.h file for compatible with non Android GKI kernel.
+ifeq ($(CONFIG_BCMDHD_INTERNAL_WAKELOCK_H),y)
+DHDCFLAGS += -DINTERNAL_WAKELOCK_H
+endif
+
 #####################
 # SDIO Basic feature
 #####################
