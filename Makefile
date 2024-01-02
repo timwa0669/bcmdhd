@@ -83,6 +83,11 @@ endif
 # To support ACS on hostapd
 DHDCFLAGS += -DWL_SUPPORT_ACS_OFFLOAD
 
+# Use internal wakelock.h file for compatible with non Android GKI kernel.
+ifeq ($(CONFIG_BCMDHD_INTERNAL_WAKELOCK_H),y)
+DHDCFLAGS += -DINTERNAL_WAKELOCK_H
+endif
+
 #####################
 # SDIO Basic feature
 #####################
