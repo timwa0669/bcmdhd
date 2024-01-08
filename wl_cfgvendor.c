@@ -8446,7 +8446,7 @@ wl_cfgvendor_set_multista_use_case(struct wiphy *wiphy,
 }
 
 #ifdef WL_SUPPORT_ACS_OFFLOAD
-static int wl_cfgvendor_acs_offload_post(struct wiphy *wiphy);
+
 #define ACS_OFFLOAD_DELAY		10
 #define ACS_OFFLOAD_BUF_SIZE		1024
 #define ACS_MAX_RETRY			10
@@ -8542,18 +8542,14 @@ wl_cfgvendor_acs_offload_report(acs_offload_work_t *acs_offload,
 
 	ctl_ch = wf_chspec_ctlchan(chspec);
 	ctl_freq = ieee80211_channel_to_frequency( ctl_ch,
-#ifndef WL_6E
 			(band==WL_CHANSPEC_BAND_2G)?IEEE80211_BAND_2GHZ : IEEE80211_BAND_5GHZ);
-#else
-			(band==WL_CHANSPEC_BAND_2G)?IEEE80211_BAND_2GHZ : (band == WL_CHANSPEC_BAND_5G)? IEEE80211_BAND_5GHZ : IEEE80211_BAND_6GHZ);
-#endif // endif
-
 	bw = CHSPEC_BW(chspec);
 	sb = CHSPEC_CTL_SB(chspec);
 
 	WL_ERR(("ACS: ctl_freq=%d, center_ch=%d, band=0x%X, bw=0x%X, sb=0x%X\n",
 		ctl_freq, ctl_ch, band, bw, sb));
 
+	report->ch_width = bw;
 	switch(bw) {
 		case WL_CHANSPEC_BW_80:
 			if (acs_offload->parameter.vht_enabled && acs_offload->parameter.ch_width == 80) {
@@ -8575,13 +8571,12 @@ wl_cfgvendor_acs_offload_report(acs_offload_work_t *acs_offload,
 					case WL_CHANSPEC_CTL_SB_UU:
 						report->primary_freq = ctl_freq;
 						report->second_freq = ctl_freq - 20;
-						break;
 					default:
 						report->ch_width = 0;
 						break;
 				}
+				break;
 			}
-			break;
 		case WL_CHANSPEC_BW_40:
 			if (acs_offload->parameter.ht40_enabled) {
 				report->ch_width = 40;
@@ -8817,12 +8812,6 @@ int wl_cfgvendor_acs_offload(struct wiphy *wiphy,
 				break;
 		}
 	}
-#ifdef WL_6E
-	/* Update band for 6Ghz */
-	if (params->channels[0] > FREQ_START_6G_CHANNEL) {
-		params->band = WLC_BAND_6G;
-	}
-#endif /* WL_6E */
 	ret = wl_cfgvendor_acs_offload_post(wiphy);
 
 	return ret;
@@ -8862,12 +8851,8 @@ wl_cfgvendor_acs_offload_post(struct wiphy *wiphy)
 			params->vht_enabled, params->ch_width, params->chan_cnt));
 	if ( params->band == WLC_BAND_2G)
 		band = WL_CHANSPEC_BAND_2G;
-	else if (params->band == WLC_BAND_5G)
-		band = WL_CHANSPEC_BAND_5G;
-#ifdef WL_6E
 	else
-		band = WL_CHANSPEC_BAND_6G;
-#endif /* Wl_6E */
+		band = WL_CHANSPEC_BAND_5G;
 
 	/* if band of station and band for acs are same, use same chanspec to make SCC */
 	if ( wl_cfg80211_get_sta_channel(cfg) ) {
@@ -8883,11 +8868,7 @@ wl_cfgvendor_acs_offload_post(struct wiphy *wiphy)
 		chspec = wl_chspec_driver_to_host(chsp);
 
 		if( (CHSPEC_IS2G(chspec) && params->band == WLC_BAND_2G) ||
-		    (CHSPEC_IS5G(chspec) && params->band == WLC_BAND_5G)
-#ifdef WL_6E
-		    || (CHSPEC_IS6G(chspec) && params->band == WLC_BAND_6G)
-#endif /* WL_6E */
-		    ) {
+		    (CHSPEC_IS5G(chspec) && params->band == WLC_BAND_5G)) {
 			acs_offload->selected = chspec;
 			goto done;
 		}
@@ -8898,17 +8879,6 @@ wl_cfgvendor_acs_offload_post(struct wiphy *wiphy)
 	for (i=0;i<params->chan_cnt;++i){
 		params->channels[i] = ieee80211_frequency_to_channel(params->channels[i]);
 	}
-
-#ifdef WL_6E
-        /* 6Ghz ACS is not supported in FW, selecting random channel among chanlist */
-        if (params->band == WLC_BAND_6G) {
-                if (params->chan_cnt > 0) {
-                        selected = params->channels[RANDOM32() % params->chan_cnt];
-                        WL_INFORM(("6Ghz ACS not supported, selected random channel = %d\n",selected));
-                        goto failed;
-                }
-        }
-#endif /* WL_6E */
 
 	buf = (u8 *)kzalloc(ACS_OFFLOAD_BUF_SIZE, GFP_KERNEL);
 	list = (wl_uint32_list_t *)buf;
@@ -8954,7 +8924,7 @@ wl_cfgvendor_acs_offload_post(struct wiphy *wiphy)
 
 		if (chosen && (band == CHSPEC_BAND(chosen))) {
 			selected = CHSPEC_CHANNEL((chanspec_t)chosen);
-			WL_ERR(("ACS: Got the acs chan : %d\n",selected));
+			WL_ERR(("ACS: Got the acs chan : %d, %x\n",selected, chosen));
 			break;
 		}
 		OSL_SLEEP(200);
@@ -8969,6 +8939,11 @@ wl_cfgvendor_acs_offload_post(struct wiphy *wiphy)
 	}
 	goto done;
 failed:
+	if (params->chan_cnt) {
+		kfree(params->channels);
+		params->channels = NULL;
+		params->chan_cnt = 0;
+	}
 
 	if (!selected) {
 		if (params->band == WLC_BAND_2G)
@@ -8977,11 +8952,6 @@ failed:
 			selected = ACS_OFFLOAD_DEFAULT_CH_5G;
 	}
 done:
-	if (params->chan_cnt) {
-		kfree(params->channels);
-		params->channels = NULL;
-		params->chan_cnt = 0;
-	}
 	if (buf)
 		kfree(buf);
 
@@ -8991,14 +8961,9 @@ done:
 			bw = WL_CHANSPEC_BW_80;
 		else if (params->ch_width == 40)
 			bw = WL_CHANSPEC_BW_40;
-
-#ifdef WL_6E
-		if (params->band == WLC_BAND_6G)
-			acs_offload->selected = wf_channel2chspec6E(selected, bw);
-		else
-#endif /* WL_6E */
-			acs_offload->selected = wf_channel2chspec(selected, bw);
+		acs_offload->selected = wf_channel2chspec(selected, bw);
 	}
+
 	acs_offload->ndev = ndev;
 	INIT_DELAYED_WORK(&acs_offload->work, wl_cfgvendor_acs_offload_work_handler);
 
