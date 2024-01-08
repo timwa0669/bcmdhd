@@ -82,6 +82,9 @@ ifeq ($(CONFIG_BCMDHD_INTERNAL_WAKELOCK_H),y)
 DHDCFLAGS += -DINTERNAL_WAKELOCK_H
 endif
 
+# To support ACS on hostapd
+DHDCFLAGS += -DWL_SUPPORT_ACS_OFFLOAD
+
 #####################
 # SDIO Basic feature
 #####################
