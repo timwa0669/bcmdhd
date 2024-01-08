@@ -747,7 +747,7 @@ all:
 
 clean:
 	rm -rf *.o *.ko *.mod.c *~ .*.cmd *.o.cmd .*.o.cmd .*.o.d *.mod \
-	Module.symvers modules.order .tmp_versions modules.builtin
+	*.dwo Module.symvers modules.order .tmp_versions modules.builtin
 
 install:
 	@$(MAKE) --no-print-directory -C $(KDIR) \
