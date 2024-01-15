@@ -88,6 +88,13 @@ ifeq ($(CONFIG_BCMDHD_INTERNAL_WAKELOCK_H),y)
 DHDCFLAGS += -DINTERNAL_WAKELOCK_H
 endif
 
+# Re-init driver when wpa_supplicant crashes.
+# Due to supplicant crash/unclean de-initialization
+# which didn't free the p2p discovery interface.
+# Code is implemented in driver but not enabled by
+# default. Enable it to prevent crash.
+DHDCFLAGS += -DEXPLICIT_DISCIF_CLEANUP
+
 #####################
 # SDIO Basic feature
 #####################
