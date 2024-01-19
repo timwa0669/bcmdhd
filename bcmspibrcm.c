@@ -69,7 +69,7 @@ extern void spi_sendrecv(sdioh_info_t *sd, uint8 *msg_out, uint8 *msg_in, int ms
 #define CMDLEN		4
 
 /* Globals */
-uint sd_msglevel = 0;
+uint sd_msglevel = SDH_ERROR_VAL;
 
 uint sd_hiok = FALSE;		/* Use hi-speed mode if available? */
 uint sd_sdmode = SDIOH_MODE_SPI;		/* Use SD4 mode by default */
