@@ -3615,7 +3615,9 @@ dhdsdio_readshared(dhd_bus_t *bus, sdpcm_shared_t *sh)
 	uint32 shaddr = 0;
 
 	/* This temporary WAR for now */
+#if defined(PLATFORM_IMX)
 	return BCME_ERROR;
+#endif /* defined(PLATFORM_IMX) */
 
 	if (bus->sih == NULL) {
 		if (bus->dhd && bus->dhd->dongle_reset) {
@@ -5950,7 +5952,7 @@ dhd_bus_init(dhd_pub_t *dhdp, bool enforce_mutex)
 #endif /* DHD_DEBUG */
 	}
 
-	/* dhdsdio_readshared_console is failed sometimes
+	/* dhdsdio_readshared_console is failed sometimes in i.MX platform
 	 * unless wait the time with specific chips so it treat as fine.
 	 */
 	if ((ret < 0) &&
