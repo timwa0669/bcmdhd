@@ -83,11 +83,6 @@ endif
 # To support ACS on hostapd
 DHDCFLAGS += -DWL_SUPPORT_ACS_OFFLOAD
 
-# Use internal wakelock.h file for compatible with non Android GKI kernel.
-ifeq ($(CONFIG_BCMDHD_INTERNAL_WAKELOCK_H),y)
-DHDCFLAGS += -DINTERNAL_WAKELOCK_H
-endif
-
 # Re-init driver when wpa_supplicant crashes.
 # Due to supplicant crash/unclean de-initialization
 # which didn't free the p2p discovery interface.

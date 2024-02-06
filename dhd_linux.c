@@ -104,11 +104,7 @@
 #include <dhd_dbg_ring.h>
 #include <dhd_debug.h>
 #if defined(CONFIG_PM_WAKELOCKS) || defined(CONFIG_HAS_WAKELOCK)
-#ifdef INTERNAL_WAKELOCK_H
-#include <wakelock.h>
-#else /* INTERNAL_WAKELOCK_H */
 #include <linux/wakelock.h>
-#endif /* INTERNAL_WAKELOCK_H */
 #endif /* CONFIG_PM_WAKELOCKS || CONFIG_HAS_WAKELOCK */
 #if defined(WL_CFG80211)
 #include <wl_cfg80211.h>

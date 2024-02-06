@@ -53,11 +53,7 @@
 #include <asm/uaccess.h>
 #include <asm/unaligned.h>
 #if defined(CONFIG_PM_WAKELOCKS) || defined(CONFIG_HAS_WAKELOCK)
-#ifdef INTERNAL_WAKELOCK_H
-#include <wakelock.h>
-#else /* INTERNAL_WAKELOCK_H */
 #include <linux/wakelock.h>
-#endif /* INTERNAL_WAKELOCK_H */
 #endif /* CONFIG_PM_WAKELOCKS || CONFIG_HAS_WAKELOCK */
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 11, 0)
 #include <linux/sched/types.h>
