@@ -1810,6 +1810,10 @@ _dhd_wlfc_mac_entry_update(athost_wl_status_info_t* ctx, wlfc_mac_descriptor_t* 
 {
 	int rc = BCME_OK;
 
+	/* If occupied=0, initialization is required as with ACTION_ADD. */
+	if ((action == eWLFC_MAC_ENTRY_ACTION_UPDATE) && (entry->occupied == 0))
+		action = eWLFC_MAC_ENTRY_ACTION_ADD;
+
 	if ((action == eWLFC_MAC_ENTRY_ACTION_ADD) || (action == eWLFC_MAC_ENTRY_ACTION_UPDATE)) {
 		entry->occupied = 1;
 		entry->state = WLFC_STATE_OPEN;
