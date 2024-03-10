@@ -66,13 +66,6 @@ DHDCFLAGS += -DPCIE_ISR_THREAD
 endif
 endif
 
-# Reset PCIe card on probing.
-# The driver may exit irregularly before and the probe
-# may fails on si_attach().
-ifneq ($(CONFIG_BCMDHD_PCIE),)
-DHDCFLAGS += -DRESET_PCIE_ON_PROBE
-endif
-
 # Reset SDIO card using mmc_hw_reset on probing.
 # The driver may exit irregularly before and the probe
 # may fails on bootloader ready timeout.
