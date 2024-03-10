@@ -53,8 +53,6 @@ ifeq ($(CONFIG_BCMDHD_PLATFORM_GENERIC),y)
 DHDCFLAGS += -DCONFIG_DTS
 endif
 
-DHDCFLAGS += -DWL_VIF_SUPPORT
-
 # ISR thread options. Disabled when using hw oob.
 ifeq ($(filter y, $(CONFIG_BCMDHD_OOB_HOST_WAKE) $(CONFIG_BCMDHD_SDIO_OOB) $(CONFIG_BCMDHD_DISABLE_ISR_THREAD)),)
 ifeq ($(CONFIG_BCMDHD_SDIO),y)
