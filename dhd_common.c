@@ -116,7 +116,8 @@
 #ifdef DHD_LOG_PRINT_RATE_LIMIT
 int log_print_threshold = 0;
 #endif /* DHD_LOG_PRINT_RATE_LIMIT */
-uint dhd_msg_level = DHD_ERROR_VAL | DHD_FWLOG_VAL | DHD_EVENT_VAL;
+uint dhd_msg_level = DHD_ERROR_VAL | DHD_FWLOG_VAL | DHD_EVENT_VAL
+	| DHD_WL_VAL | DHD_WL_VAL2 | DHD_DBGIF_VAL | DHD_DNGL_IOVAR_SET_VAL;
 #if (0)
 uint dhd_msg_level = DHD_ERROR_VAL | DHD_FWLOG_VAL | DHD_EVENT_VAL
 	/* For CUSTOMER_HW4 do not enable DHD_IOVAR_MEM_VAL by default */
