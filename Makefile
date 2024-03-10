@@ -66,13 +66,6 @@ DHDCFLAGS += -DPCIE_ISR_THREAD
 endif
 endif
 
-# Reset SDIO card using mmc_hw_reset on probing.
-# The driver may exit irregularly before and the probe
-# may fails on bootloader ready timeout.
-ifeq ($(CONFIG_BCMDHD_SDIO),y)
-DHDCFLAGS += -DRESET_SDIO_ON_PROBE
-endif
-
 # Re-init driver when wpa_supplicant crashes.
 # Due to supplicant crash/unclean de-initialization
 # which didn't free the p2p discovery interface.
