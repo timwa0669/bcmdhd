@@ -2628,9 +2628,11 @@ extern uint dhd_pktgen_len;
 extern char fw_path2[MOD_PARAM_PATHLEN];
 #endif // endif
 
+#if defined(ANDROID_PLATFORM_VERSION)
 #if (ANDROID_PLATFORM_VERSION < 7)
 #define DHD_LEGACY_FILE_PATH
 #endif /* ANDROID_PLATFORM_VERSION < 7 */
+#endif /* ANDROID_PLATFORM_VERSION */
 #define VENDOR_PATH ""
 
 #if (0)
