@@ -53,6 +53,7 @@ CONFIG_BCM4339 :=
 
 # PCIE specific.
 #CONFIG_BCMDHD_PCIE := y
+#CONFIG_BCMDHD_OOB_HOST_WAKE := y
 
 # firmware/nvram/clm_blob paths.
 #CONFIG_BCMDHD_FW_PATH := ""
