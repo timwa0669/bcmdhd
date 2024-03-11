@@ -32,7 +32,7 @@
 
 # Compilation parameters configuation.
 #CONFIG_BCMDHD := m
-#DHD_MODULE_NAME := cywdhd
+DHD_MODULE_NAME := bcmdhd
 #CONFIG_BCMDHDX := m
 
 # Chip specific.
@@ -769,13 +769,13 @@ EXTRA_CFLAGS += -I$(src)/include/ -I$(src)/
 KBUILD_CFLAGS += -I$(KDIR)/include -I$(CURDIR)
 
 ifneq ($(CONFIG_BCMDHD),)
-bcmdhd-objs := $(DHDOFILES)
-obj-$(DRIVER_TYPE)   += bcmdhd.o
+$(DHD_MODULE_NAME)-objs := $(DHDOFILES)
+obj-$(DRIVER_TYPE)   += $(DHD_MODULE_NAME).o
 endif
 
 ifneq ($(CONFIG_BCMDHDX),)
-bcmdhdx-objs := $(DHDOFILES)
-obj-$(DRIVER_TYPE) += bcmdhd.o bcmdhdx.o
+$(DHD_MODULE_NAME)x-objs := $(DHDOFILES)
+obj-$(DRIVER_TYPE) += $(DHD_MODULE_NAME).o $(DHD_MODULE_NAME)x.o
 endif
 
 all:
