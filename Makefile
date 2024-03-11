@@ -27,6 +27,48 @@
 #
 
 #####################
+# Hardcoded defines
+#####################
+
+# Compilation parameters configuation.
+#CONFIG_BCMDHD := m
+#DHD_MODULE_NAME := cywdhd
+#CONFIG_BCMDHDX := m
+
+# Chip specific.
+#CONFIG_BCMDHD_WPA3 := y
+#CONFIG_BCMDHD_WIFI6_6E := y
+#CONFIG_BCMDHD_P2P_IF := y
+#CONFIG_BT_OVER_SDIO := y
+#CONFIG_BCMDHD_XR_SUPPORT := y
+CONFIG_BCM4373 :=
+CONFIG_BCM4354 :=
+CONFIG_BCM4356 :=
+CONFIG_BCM4339 :=
+
+# SDIO specific.
+#CONFIG_BCMDHD_SDIO := y
+#CONFIG_BCMDHD_SDMMC := y
+#CONFIG_BCMDHD_SDIO_OOB := y
+
+# PCIE specific.
+#CONFIG_BCMDHD_PCIE := y
+
+# firmware/nvram/clm_blob paths.
+#CONFIG_BCMDHD_FW_PATH := ""
+#CONFIG_BCMDHD_NVRAM_PATH := ""
+#CONFIG_BCMDHD_CLM_PATH := ""
+
+# Platform specific.
+#CONFIG_BCMDHD_PLATFORM := Rockchip
+#CONFIG_BCMDHD_PLATFORM := Imx
+#CONFIG_HAVE_IMX8_SOC := y
+#CONFIG_BCMDHD_BROKEN_SG := y
+#CONFIG_BCMDHD_OF_SUPPORT := y
+#CONFIG_BCMDHD_IFX_CFG80211 := y
+#CONFIG_BCMDHD_DISABLE_ISR_THREAD := y
+
+#####################
 # Customized patches
 #####################
 
