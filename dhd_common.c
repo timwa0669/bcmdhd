@@ -5752,6 +5752,9 @@ dhd_apply_default_clm(dhd_pub_t *dhd, char *clm_path)
 	char iovbuf[WLC_IOCTL_SMLEN];
 	int status = FALSE;
 
+#if defined(CONFIG_BCMDHD_CLM_PATH)
+	clm_blob_path = CONFIG_BCMDHD_CLM_PATH;
+#endif /* defined(CONFIG_BCMDHD_CLM_PATH) */
 	if (clm_path[0] != '\0') {
 		if (strlen(clm_path) > MOD_PARAM_PATHLEN) {
 			DHD_ERROR(("clm path exceeds max len\n"));
@@ -5759,9 +5762,12 @@ dhd_apply_default_clm(dhd_pub_t *dhd, char *clm_path)
 		}
 		clm_blob_path = clm_path;
 		DHD_TRACE(("clm path from module param:%s\n", clm_path));
+	}
+#if (0)
 	} else {
 		clm_blob_path = VENDOR_PATH CONFIG_BCMDHD_CLM_PATH;
 	}
+#endif
 
 	/* If CLM blob file is found on the filesystem, download the file.
 	 * After CLM file download or If the blob file is not present,

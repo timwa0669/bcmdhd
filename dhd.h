@@ -400,6 +400,7 @@ enum dhd_op_flags {
 #define DHD_SCAN_DEF_TIMEOUT 10000 /* ms: Max time out for scan in progress */
 #endif /* DHD_DEBUG */
 
+#if (0)
 #ifndef CONFIG_BCMDHD_CLM_PATH
 #ifdef OEM_ANDROID
 #define CONFIG_BCMDHD_CLM_PATH "/etc/wifi/bcmdhd_clm.blob"
@@ -407,6 +408,7 @@ enum dhd_op_flags {
 #define CONFIG_BCMDHD_CLM_PATH "/var/run/bcmdhd_clm.blob"
 #endif /* OEM_ANDROID */
 #endif /* CONFIG_BCMDHD_CLM_PATH */
+#endif
 #define WL_CCODE_NULL_COUNTRY  "#n"
 
 #define FW_VER_STR_LEN	128

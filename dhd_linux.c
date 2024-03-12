@@ -9606,6 +9606,7 @@ bool dhd_update_fw_nv_path(dhd_info_t *dhdinfo)
 	 */
 
 	/* set default firmware and nvram path for built-in type driver */
+#if (0)
 	if (!dhd_download_fw_on_driverload) {
 #ifdef CONFIG_BCMDHD_FW_PATH
 		fw = VENDOR_PATH CONFIG_BCMDHD_FW_PATH;
@@ -9614,6 +9615,7 @@ bool dhd_update_fw_nv_path(dhd_info_t *dhdinfo)
 		nv = VENDOR_PATH CONFIG_BCMDHD_NVRAM_PATH;
 #endif /* CONFIG_BCMDHD_NVRAM_PATH */
 	}
+#endif /* (0) */
 
 	/* check if we need to initialize the path */
 	if (dhdinfo->fw_path[0] == '\0') {
@@ -9629,9 +9631,15 @@ bool dhd_update_fw_nv_path(dhd_info_t *dhdinfo)
 	 *
 	 * TODO: need a solution for multi-chip, can't use the same firmware for all chips
 	 */
+#if defined(CONFIG_BCMDHD_FW_PATH)
+	fw = CONFIG_BCMDHD_FW_PATH;
+#endif /* CONFIG_BCMDHD_FW_PATH */
 	if (firmware_path[0] != '\0')
 		fw = firmware_path;
 
+#if defined(CONFIG_BCMDHD_NVRAM_PATH)
+	nv = CONFIG_BCMDHD_NVRAM_PATH;
+#endif /* CONFIG_BCMDHD_NVRAM_PATH */
 	if (nvram_path[0] != '\0')
 		nv = nvram_path;
 
@@ -9743,11 +9751,13 @@ extern bool dhd_update_btfw_path(dhd_info_t *dhdinfo, char* btfw_path)
 	 */
 
 	/* set default firmware and nvram path for built-in type driver */
+#if (0)
 	if (!dhd_download_fw_on_driverload) {
 #ifdef CONFIG_BCMDHD_BTFW_PATH
 		fw = CONFIG_BCMDHD_BTFW_PATH;
 #endif /* CONFIG_BCMDHD_FW_PATH */
 	}
+#endif /* (0) */
 
 	/* check if we need to initialize the path */
 	if (dhdinfo->btfw_path[0] == '\0') {
@@ -9757,6 +9767,9 @@ extern bool dhd_update_btfw_path(dhd_info_t *dhdinfo, char* btfw_path)
 
 	/* Use module parameter if it is valid, EVEN IF the path has not been initialized
 	 */
+#ifdef CONFIG_BCMDHD_BTFW_PATH
+	fw = CONFIG_BCMDHD_BTFW_PATH;
+#endif /* CONFIG_BCMDHD_FW_PATH */
 	if (btfw_path[0] != '\0')
 		fw = btfw_path;
 
@@ -21338,7 +21351,10 @@ void
 dhd_set_blob_support(dhd_pub_t *dhdp, char *fw_path)
 {
 	struct file *fp;
+	char *filepath = CONFIG_BCMDHD_CLM_PATH;
+#if (0)
 	char *filepath = VENDOR_PATH CONFIG_BCMDHD_CLM_PATH;
+#endif /* (0) */
 	fp = filp_open(filepath, O_RDONLY, 0);
 	if (IS_ERR(fp)) {
 		DHD_ERROR(("%s: ----- blob file doesn't exist (%s) -----\n", __FUNCTION__,

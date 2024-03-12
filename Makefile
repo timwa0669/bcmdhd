@@ -55,10 +55,11 @@ CONFIG_BCM4339 :=
 #CONFIG_BCMDHD_PCIE := y
 #CONFIG_BCMDHD_OOB_HOST_WAKE := y
 
-# firmware/nvram/clm_blob paths.
+# firmware/nvram/clm_blob/btfw paths.
 #CONFIG_BCMDHD_FW_PATH := ""
 #CONFIG_BCMDHD_NVRAM_PATH := ""
 #CONFIG_BCMDHD_CLM_PATH := ""
+#CONFIG_BCMDHD_BTFW_PATH := ""
 
 # Platform specific.
 #CONFIG_BCMDHD_PLATFORM := Rockchip
