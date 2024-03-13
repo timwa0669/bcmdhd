@@ -9720,6 +9720,10 @@ bool dhd_update_fw_nv_path(dhd_info_t *dhdinfo)
 	DHD_ERROR(("ucode path: %s\n", dhdinfo->uc_path));
 #endif /* DHD_UCODE_DOWNLOAD */
 
+	if (dhdinfo->fw_path)
+		DHD_ERROR(("Loading firmware from %s\n", dhdinfo->fw_path));
+	if (dhdinfo->nv_path)
+		DHD_ERROR(("Loading nvram from %s\n", dhdinfo->nv_path));
 	/* fw_path and nv_path are not mandatory for BCMEMBEDIMAGE */
 	if (dhdinfo->fw_path[0] == '\0') {
 		DHD_ERROR(("firmware path not found\n"));
@@ -9787,6 +9791,8 @@ extern bool dhd_update_btfw_path(dhd_info_t *dhdinfo, char* btfw_path)
 	/* clear the path in module parameter */
 	btfw_path[0] = '\0';
 
+	if (dhdinfo->btfw_path)
+		DHD_ERROR(("Loading bt firmware from %s\n", dhdinfo->btfw_path));
 	if (dhdinfo->btfw_path[0] == '\0') {
 		DHD_ERROR(("bt firmware path not found\n"));
 		return FALSE;

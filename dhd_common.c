@@ -5769,6 +5769,11 @@ dhd_apply_default_clm(dhd_pub_t *dhd, char *clm_path)
 	}
 #endif
 
+	if (clm_blob_path)
+		DHD_ERROR(("Loading clm blob from %s\n", clm_blob_path));
+	else {
+		DHD_ERROR(("clm blob path not found\n"));
+	}
 	/* If CLM blob file is found on the filesystem, download the file.
 	 * After CLM file download or If the blob file is not present,
 	 * validate the country code before proceeding with the initialization.
