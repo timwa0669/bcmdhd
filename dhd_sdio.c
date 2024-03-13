@@ -128,6 +128,10 @@ static int _dhdsdio_secure_firmware_download(struct dhd_bus *bus);
 
 #define MAX_DATA_BUF	(64 * 1024)	/* Must be large enough to hold biggest possible glom */
 
+#ifdef DHD_SDIO_MEM_BUF
+#define MAX_MEM_BUF		(4 * 1024)
+#endif /* DHD_SDIO_MEM_BUF */
+
 #ifndef DHD_FIRSTREAD
 #define DHD_FIRSTREAD   32
 #endif // endif
@@ -475,6 +479,9 @@ typedef struct dhd_bus {
 #endif /* defined (BT_OVER_SDIO) */
 	bool		chipidpresent;	/* ChipID is present in SDIO core enum address space */
 	bool		secureboot;		/* security related features are present */
+#ifdef DHD_SDIO_MEM_BUF
+	uint8		*membuf;
+#endif /* DHD_SDIO_MEM_BUF */
 } dhd_bus_t;
 
 /*
@@ -3575,6 +3582,42 @@ dhdsdio_membytes(dhd_bus_t *bus, bool write, uint32 address, uint8 *data, uint s
 
 	/* Do the transfer(s) */
 	while (size) {
+#ifdef DHD_SDIO_MEM_BUF
+		uint8 *pdata = data;
+		uint offset = sdaddr;
+		uint remain = dsize;
+
+		while (remain > 0) {
+			uint nbytes;
+
+			if (remain > MAX_MEM_BUF) {
+				nbytes = MAX_MEM_BUF;
+			} else {
+				nbytes = remain;
+			}
+
+			DHD_INFO(("%s: %s %d bytes at offset 0x%08x in window 0x%08x\n",
+					  __FUNCTION__, (write ? "write" : "read"), nbytes, offset,
+						 (address & SBSDIO_SBWINDOW_MASK)));
+
+			if (write) {
+				memcpy(bus->membuf, pdata, nbytes);
+			}
+
+			if ((bcmerror = bcmsdh_rwdata(bus->sdh, write, offset, bus->membuf, nbytes))) {
+				DHD_ERROR(("%s: membytes transfer failed\n", __FUNCTION__));
+				break;
+			}
+
+			if (!write) {
+				memcpy(pdata, bus->membuf, nbytes);
+			}
+
+			pdata += nbytes;
+			offset += nbytes;
+			remain -= nbytes;
+		}
+#else /* DHD_SDIO_MEM_BUF */
 		DHD_INFO(("%s: %s %d bytes at offset 0x%08x in window 0x%08x\n",
 		          __FUNCTION__, (write ? "write" : "read"), dsize, sdaddr,
 		          (address & SBSDIO_SBWINDOW_MASK)));
@@ -3582,6 +3625,7 @@ dhdsdio_membytes(dhd_bus_t *bus, bool write, uint32 address, uint8 *data, uint s
 			DHD_ERROR(("%s: membytes transfer failed\n", __FUNCTION__));
 			break;
 		}
+#endif /* DHD_SDIO_MEM_BUF */
 
 		/* Adjust for next transfer (if any) */
 		if ((size -= dsize)) {
@@ -9359,6 +9403,23 @@ dhdsdio_probe_malloc(dhd_bus_t *bus, osl_t *osh, void *sdh)
 		goto fail;
 	}
 
+#ifdef DHD_SDIO_MEM_BUF
+	bus->membuf = MALLOC(osh, MAX_MEM_BUF);
+	if (bus->membuf == NULL) {
+		DHD_ERROR(("%s: MALLOC of %d-byte membuf failed\n", __FUNCTION__, MAX_MEM_BUF));
+		if (bus->databuf) {
+#ifndef CONFIG_DHD_USE_STATIC_BUF
+			MFREE(osh, bus->databuf, MAX_DATA_BUF);
+#endif /* CONFIG_DHD_USE_STATIC_BUF */
+			bus->databuf = NULL;
+		}
+		if (!bus->rxblen)
+			DHD_OS_PREFREE(bus->dhd, bus->rxbuf, bus->rxblen);
+		goto fail;
+	}
+	memset(bus->membuf, 0, MAX_MEM_BUF);
+#endif /* DHD_SDIO_MEM_BUF */
+
 	/* Align the buffer */
 	if ((uintptr)bus->databuf % DHD_SDALIGN)
 		bus->dataptr = bus->databuf + (DHD_SDALIGN - ((uintptr)bus->databuf % DHD_SDALIGN));
@@ -9603,6 +9664,13 @@ dhdsdio_release_malloc(dhd_bus_t *bus, osl_t *osh)
 #endif // endif
 		bus->databuf = NULL;
 	}
+
+#ifdef DHD_SDIO_MEM_BUF
+	if (bus->membuf) {
+		MFREE(osh, bus->membuf, MAX_MEM_BUF);
+		bus->membuf = NULL;
+	}
+#endif /* DHD_SDIO_MEM_BUF */
 
 	if (bus->vars && bus->varsz) {
 		MFREE(osh, bus->vars, bus->varsz);

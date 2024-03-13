@@ -119,6 +119,11 @@ endif
 # default. Enable it to prevent crash.
 DHDCFLAGS += -DEXPLICIT_DISCIF_CLEANUP
 
+# Use buffer to limit per transfer data. Some platforms like
+# RK3399, may cause DMA addr overflow if trying to transfer
+# too much data on one sdio_rw_transfer operation.
+DHDCFLAGS += -DDHD_SDIO_MEM_BUF
+
 #####################
 # SDIO Basic feature
 #####################
