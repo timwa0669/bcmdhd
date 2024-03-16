@@ -76,6 +76,15 @@ CONFIG_BCM4339 :=
 #CONFIG_BCMDHD_IFX_CFG80211 := y
 #CONFIG_BCMDHD_DISABLE_ISR_THREAD := y
 
+# Static buffer & Memory preallocation related.
+# This need platform code support.
+#CONFIG_BROADCOM_WIFI_RESERVED_MEM := y
+#CONFIG_DHD_USE_STATIC_BUF := y
+#CONFIG_DHD_USE_STATIC_MEMDUMP := y
+#CONFIG_BCMDHD_PREALLOC_PKTIDMAP := y
+#CONFIG_BCMDHD_PREALLOC_MEMDUMP := y
+#CONFIG_DHD_USE_STATIC_CTRLBUF := y
+
 #####################
 # Customized patches
 #####################
@@ -123,6 +132,29 @@ DHDCFLAGS += -DEXPLICIT_DISCIF_CLEANUP
 # RK3399, may cause DMA addr overflow if trying to transfer
 # too much data on one sdio_rw_transfer operation.
 DHDCFLAGS += -DDHD_SDIO_MEM_BUF
+
+# Static buffer & Memory preallocation related definition control.
+ifeq ($(CONFIG_BROADCOM_WIFI_RESERVED_MEM),y)
+DHDCFLAGS += -DCONFIG_BROADCOM_WIFI_RESERVED_MEM
+endif
+ifeq ($(CONFIG_DHD_USE_STATIC_BUF),y)
+DHDCFLAGS += -DCONFIG_DHD_USE_STATIC_BUF
+endif
+ifeq ($(CONFIG_DHD_USE_STATIC_MEMDUMP),y)
+DHDCFLAGS += -DCONFIG_DHD_USE_STATIC_MEMDUMP
+endif
+ifeq ($(CONFIG_BCMDHD_PREALLOC_PKTIDMAP),y)
+DHDCFLAGS += -DCONFIG_BCMDHD_PREALLOC_PKTIDMAP
+endif
+ifeq ($(CONFIG_BCMDHD_PREALLOC_MEMDUMP),y)
+DHDCFLAGS += -DCONFIG_BCMDHD_PREALLOC_MEMDUMP
+endif
+ifneq ($(CONFIG_BCMDHD_PCIE),)
+DHDCFLAGS += -DCONFIG_BCMDHD_PCIE
+ifeq ($(CONFIG_DHD_USE_STATIC_CTRLBUF),y)
+DHDCFLAGS += -DCONFIG_DHD_USE_STATIC_CTRLBUF
+endif
+endif
 
 #####################
 # SDIO Basic feature
