@@ -13,6 +13,11 @@ static void *dhd_wlan_get_country_code(char *ccode
     , u32 flags
 #endif /* (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 10, 58)) */
     );
+#ifdef CONFIG_BROADCOM_WIFI_RESERVED_MEM
+extern int dhd_init_wlan_mem(void);
+extern void dhd_exit_wlan_mem(void);
+extern void *dhd_wlan_mem_prealloc(int section, unsigned long size);
+#endif /* CONFIG_BROADCOM_WIFI_RESERVED_MEM */
 
 struct wifi_platform_data dhd_wlan_control = {
 	.set_power	= dhd_wlan_set_power,
@@ -20,6 +25,9 @@ struct wifi_platform_data dhd_wlan_control = {
 	.set_carddetect	= dhd_wlan_set_carddetect,
 	.get_mac_addr	= dhd_wlan_get_mac_addr,
 	.get_country_code = dhd_wlan_get_country_code,
+#ifdef CONFIG_BROADCOM_WIFI_RESERVED_MEM
+	.mem_prealloc	= dhd_wlan_mem_prealloc,
+#endif /* CONFIG_BROADCOM_WIFI_RESERVED_MEM */
 };
 
 struct resource dhd_wlan_resources = {
@@ -98,6 +106,9 @@ int dhd_wlan_init_plat_data(void)
 {
     uint irq;
 	int irq_flags = -1;
+#ifdef CONFIG_BROADCOM_WIFI_RESERVED_MEM
+	int ret = 0;
+#endif /* CONFIG_BROADCOM_WIFI_RESERVED_MEM */
 
 	printf("%s, enter", __FUNCTION__);
 
@@ -117,11 +128,21 @@ int dhd_wlan_init_plat_data(void)
 		pr_warn("%s: unknown oob irqflags !\n", __func__);
     }
 
+#ifdef CONFIG_BROADCOM_WIFI_RESERVED_MEM
+	ret = dhd_init_wlan_mem();
+	if (ret)
+		return ret;
+#endif /* CONFIG_BROADCOM_WIFI_RESERVED_MEM */
+
 	return 0;
 }
 
 int dhd_wlan_deinit_plat_data(void)
 {
-    return 0;
+#ifdef CONFIG_BROADCOM_WIFI_RESERVED_MEM
+	dhd_exit_wlan_mem();
+#endif /* CONFIG_BROADCOM_WIFI_RESERVED_MEM */
+
+	return 0;
 }
 #endif /* CONFIG_DHD_PLAT_ROCKCHIP */

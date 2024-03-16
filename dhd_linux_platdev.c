@@ -138,6 +138,7 @@ void* wifi_platform_prealloc(wifi_adapter_info_t *adapter, int section, unsigned
 		return NULL;
 	plat_data = adapter->wifi_plat_data;
 	if (plat_data->mem_prealloc) {
+		DHD_INFO(("%s: trying to alloc section %d with size %lu\n", __FUNCTION__, section, size));
 		alloc_ptr = plat_data->mem_prealloc(section, size);
 		if (alloc_ptr) {
 			DHD_INFO(("success alloc section %d\n", section));
