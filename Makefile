@@ -75,6 +75,7 @@ CONFIG_BCM4339 :=
 #CONFIG_BCMDHD_BROKEN_SG := y
 #CONFIG_BCMDHD_IFX_CFG80211 := y
 #CONFIG_BCMDHD_DISABLE_ISR_THREAD := y
+#CONFIG_DHD_SDIO_MEM_BUF := y
 
 # Static buffer & Memory preallocation related.
 # This need platform code support.
@@ -132,7 +133,9 @@ DHDCFLAGS += -DEXPLICIT_DISCIF_CLEANUP
 # Use buffer to limit per transfer data. Some platforms like
 # RK3399, may cause DMA addr overflow if trying to transfer
 # too much data on one sdio_rw_transfer operation.
+ifeq ($(CONFIG_DHD_SDIO_MEM_BUF),y)
 DHDCFLAGS += -DDHD_SDIO_MEM_BUF
+endif
 
 # Static buffer & Memory preallocation related definition control.
 ifeq ($(CONFIG_BROADCOM_WIFI_RESERVED_MEM),y)
