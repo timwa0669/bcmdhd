@@ -160,6 +160,14 @@ DHDCFLAGS += -DCONFIG_DHD_USE_STATIC_CTRLBUF
 endif
 endif
 
+# OOB related definition control.
+# We won't enable CONFIG_BCMDHD_OOB_HOST_WAKE and CONFIG_BCMDHD_SDIO_OOB
+# at the same time due to significant performance downgrade has been
+# found.
+ifneq ($(filter y, $(CONFIG_BCMDHD_OOB_HOST_WAKE) $(CONFIG_BCMDHD_SDIO_OOB)),)
+DHDCFLAGS += -DCONFIG_BCMDHD_OOB_HOST_WAKE
+endif
+
 #####################
 # SDIO Basic feature
 #####################
