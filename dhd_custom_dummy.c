@@ -83,6 +83,7 @@ dhd_wifi_init_gpio(void)
 	printk(KERN_INFO "%s: gpio_wlan_power : %d\n", __FUNCTION__, wlan_reg_on);
 
 	if (gpio_is_valid(wlan_reg_on)) {
+		gpio_free(wlan_reg_on);
 		if (gpio_request_one(wlan_reg_on, GPIOF_OUT_INIT_LOW, "WL_REG_ON")) {
 			printk(KERN_ERR "%s: Failed to request gpio %d for WL_REG_ON\n",
 				__FUNCTION__, wlan_reg_on);
@@ -136,7 +137,7 @@ dhd_wlan_power(int onoff)
 {
 	printk(KERN_INFO"%s Enter: power %s\n", __func__, onoff ? "on" : "off");
 
-	if (wlan_reg_on < 0) {
+	if (!gpio_is_valid(wlan_reg_on)) {
 		return 0;
 	}
 
@@ -244,7 +245,9 @@ fail:
 int dhd_wlan_deinit_plat_data(void)
 {
 #ifdef CONFIG_BCMDHD_OOB_HOST_WAKE
-	gpio_free(wlan_host_wake_up);
+	if (gpio_is_valid(wlan_host_wake_up)) {
+		gpio_free(wlan_host_wake_up);
+	}
 #endif /* CONFIG_BCMDHD_OOB_HOST_WAKE */
 
 #ifdef CONFIG_BROADCOM_WIFI_RESERVED_MEM
@@ -252,6 +255,9 @@ int dhd_wlan_deinit_plat_data(void)
 #endif /* CONFIG_BROADCOM_WIFI_RESERVED_MEM */
 
 	dhd_wlan_power(0);
+	if (gpio_is_valid(wlan_reg_on)) {
+		gpio_free(wlan_reg_on);
+	}
 	return 0;
 }
 
