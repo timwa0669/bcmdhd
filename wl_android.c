@@ -5280,6 +5280,10 @@ wl_android_set_auto_channel(struct net_device *dev, const char* cmd_str,
 	uint32 band = WLC_BAND_2G;
 	uint32 buf_size;
 	struct bcm_cfg80211 *cfg = wl_get_cfg(dev);
+#ifdef WL_ACS_SECONDARY_CHANNEL_WAR
+	unsigned char i;
+	const u8 chan_list_5g_40m[6] = { 38, 46, 54, 62, 151, 159 };
+#endif /* WL_ACS_SECONDARY_CHANNEL_WAR */
 
 	if (cmd_str) {
 		WL_INFORM(("Command: %s len:%d \n", cmd_str, (int)strlen(cmd_str)));
@@ -5406,6 +5410,19 @@ wl_android_set_auto_channel(struct net_device *dev, const char* cmd_str,
 			chosen = 0;
 		} else {
 			chosen = dtoh32(chosen);
+#ifdef WL_ACS_SECONDARY_CHANNEL_WAR
+			/*
+			chosen = dtoh32(chosen) & 0xff;
+			WL_ERR(("chosen ch == %d \n",chosen));
+			for (i = 0; i <= 5; i++) {
+				if (chosen == chan_list_5g_40m[i]) {
+					chosen = chan_list_5g_40m[i] - 2;
+					WL_ERR(("final chosen ch== %d\n", chosen));
+					break;
+				}
+			}
+			*/
+#endif /* WL_ACS_SECONDARY_CHANNEL_WAR */
 		}
 
 		if (chosen) {
@@ -5416,6 +5433,18 @@ wl_android_set_auto_channel(struct net_device *dev, const char* cmd_str,
 				channel = LCHSPEC_CHANNEL((chanspec_t)chosen);
 			} else {
 				channel = CHSPEC_CHANNEL((chanspec_t)chosen);
+#ifdef WL_ACS_SECONDARY_CHANNEL_WAR
+				for (i = 0; i <= 5; i++) {
+					if (channel == chan_list_5g_40m[i]) {
+						if ((chosen >> 8) & 0x01)
+							channel = chan_list_5g_40m[i] + 2;
+						else
+							channel = chan_list_5g_40m[i] - 2;
+						WL_ERR(("final chosen ch== %d\n", channel));
+						break;
+					}
+				}
+#endif /* WL_ACS_SECONDARY_CHANNEL_WAR */
 			}
 #else
 			channel = CHSPEC_CHANNEL((chanspec_t)chosen);

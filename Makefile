@@ -41,6 +41,7 @@ DHD_MODULE_NAME := bcmdhd
 #CONFIG_BCMDHD_P2P_IF := y
 #CONFIG_BT_OVER_SDIO := y
 #CONFIG_BCMDHD_XR_SUPPORT := y
+#CONFIG_DHD_ACS_SECONDARY_CHANNEL_WAR := y
 CONFIG_BCM4373 :=
 CONFIG_BCM4354 :=
 CONFIG_BCM4356 :=
@@ -166,6 +167,14 @@ endif
 # found.
 ifneq ($(filter y, $(CONFIG_BCMDHD_OOB_HOST_WAKE) $(CONFIG_BCMDHD_SDIO_OOB)),)
 DHDCFLAGS += -DCONFIG_BCMDHD_OOB_HOST_WAKE
+endif
+
+# This is a WAR for legacy firmware with buggy apcs.
+# The hostapd brcm acs code may wrongly handle secondary channel freq
+# from apcs private cmds.
+# This also needs patching hostapd for brcm apcs private cmds.
+ifeq ($(CONFIG_DHD_ACS_SECONDARY_CHANNEL_WAR),y)
+DHDCFLAGS += -DWL_ACS_SECONDARY_CHANNEL_WAR
 endif
 
 #####################
